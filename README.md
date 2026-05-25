@@ -46,7 +46,7 @@ Frontend:
 
 ```text
 .
-├── projeto_estagio_jacto/   # Backend Spring Boot/Kotlin
+├── backend/                 # Backend Spring Boot/Kotlin
 ├── frontend/                # Frontend Angular
 ├── docker-compose.yml       # MySQL local para desenvolvimento
 └── README.md
@@ -88,7 +88,7 @@ Se a porta `3306` já estiver ocupada, altere o mapeamento no `docker-compose.ym
 ## Como rodar o backend
 
 ```bash
-cd projeto_estagio_jacto
+cd backend
 ./mvnw spring-boot:run
 ```
 
@@ -231,9 +231,9 @@ Com exceção de `POST /api/auth/login`, os endpoints da API exigem token JWT.
 
 As migrations ficam em:
 
-- `projeto_estagio_jacto/src/main/resources/db/changelog/db.changelog-master.yaml`
-- `projeto_estagio_jacto/src/main/resources/db/changelog/changes/001-initial-schema.yaml`
-- `projeto_estagio_jacto/src/main/resources/db/changelog/changes/002-seed-data.yaml`
+- `backend/src/main/resources/db/changelog/db.changelog-master.yaml`
+- `backend/src/main/resources/db/changelog/changes/001-initial-schema.yaml`
+- `backend/src/main/resources/db/changelog/changes/002-seed-data.yaml`
 
 Tabelas criadas:
 
@@ -249,14 +249,14 @@ O schema não é criado por `ddl-auto`; o backend usa `spring.jpa.hibernate.ddl-
 Backend:
 
 ```bash
-cd projeto_estagio_jacto
+cd backend
 ./mvnw test
 ```
 
 E2E/API backend:
 
 ```bash
-cd projeto_estagio_jacto
+cd backend
 ./mvnw -Dtest=ApiE2ETest test
 ```
 
@@ -289,7 +289,7 @@ Para entregar o teste técnico:
    - `operator@rodojacto.com` / `123456`
 4. Informe os comandos principais:
    - `docker compose up -d`
-   - `cd projeto_estagio_jacto && ./mvnw spring-boot:run`
+   - `cd backend && ./mvnw spring-boot:run`
    - `cd frontend && npm install && npm start`
 
 Preencher manualmente antes da entrega:

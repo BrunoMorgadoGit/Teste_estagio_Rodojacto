@@ -13,23 +13,39 @@ export interface NotificationState {
 export class NotificationService {
   readonly notification = signal<NotificationState | null>(null);
 
+  private dismissTimer: ReturnType<typeof setTimeout> | null = null;
+
   success(message: string): void {
-    this.notification.set({ type: 'success', message });
+    this.show({ type: 'success', message }, 4000);
   }
 
   error(message: string): void {
-    this.notification.set({ type: 'error', message });
+    this.show({ type: 'error', message }, 6000);
   }
 
   info(message: string): void {
-    this.notification.set({ type: 'info', message });
+    this.show({ type: 'info', message }, 4000);
   }
 
   warning(message: string): void {
-    this.notification.set({ type: 'warning', message });
+    this.show({ type: 'warning', message }, 6000);
   }
 
   clear(): void {
+    this.clearTimer();
     this.notification.set(null);
+  }
+
+  private show(state: NotificationState, durationMs: number): void {
+    this.clearTimer();
+    this.notification.set(state);
+    this.dismissTimer = setTimeout(() => this.notification.set(null), durationMs);
+  }
+
+  private clearTimer(): void {
+    if (this.dismissTimer !== null) {
+      clearTimeout(this.dismissTimer);
+      this.dismissTimer = null;
+    }
   }
 }
