@@ -1,0 +1,52 @@
+<section class="login-page">
+  <div class="login-brand">
+    <img src="logocomnome.png" alt="Rodojacto" class="brand-logo" />
+  </div>
+
+  <div class="login-panel">
+    <div class="login-copy">
+      <p class="eyebrow">Painel corporativo</p>
+      <h1>Acesse sua conta</h1>
+      <p>Sistema de gestão Rodojacto</p>
+
+      <div class="seed-card">
+        <strong>Usuários de teste</strong>
+        <span>manager@rodojacto.com / 123456</span>
+        <span>operator@rodojacto.com / 123456</span>
+      </div>
+    </div>
+
+    <form class="login-form" [formGroup]="form" (ngSubmit)="submit()">
+      <div class="form-title">
+        <h2>Entrar no sistema</h2>
+        <p>Informe suas credenciais para continuar.</p>
+      </div>
+
+      <label>
+        <span>E-mail</span>
+        <input type="email" formControlName="email" placeholder="manager@rodojacto.com" />
+        @if (form.controls.email.touched && form.controls.email.invalid) {
+          <small>E-mail obrigatório e válido.</small>
+        }
+        @if (fieldErrors()['email']) {
+          <small>{{ fieldErrors()['email'] }}</small>
+        }
+      </label>
+
+      <label>
+        <span>Senha</span>
+        <input type="password" formControlName="password" placeholder="123456" />
+        @if (form.controls.password.touched && form.controls.password.invalid) {
+          <small>Senha obrigatória.</small>
+        }
+        @if (fieldErrors()['password']) {
+          <small>{{ fieldErrors()['password'] }}</small>
+        }
+      </label>
+
+      <button type="submit" [disabled]="loading()">
+        {{ loading() ? 'Entrando...' : 'Entrar' }}
+      </button>
+    </form>
+  </div>
+</section>

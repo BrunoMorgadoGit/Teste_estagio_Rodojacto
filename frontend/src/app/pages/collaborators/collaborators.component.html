@@ -1,0 +1,166 @@
+<section class="page-shell">
+  <header class="page-header">
+    <div class="page-header-content">
+      <img src="logosemnome.png" alt="Rodojacto" class="page-icon" />
+      <div>
+        <p class="page-eyebrow">Equipe</p>
+        <h2>Colaboradores</h2>
+        <p>Administre usuários, perfis de acesso e vínculos organizacionais.</p>
+      </div>
+    </div>
+  </header>
+
+  <div class="crud-grid">
+    <section class="panel card">
+      <div class="panel-header">
+        <div>
+          <h3>Lista de colaboradores</h3>
+          @if (loading()) {
+            <p>Carregando registros...</p>
+          } @else if (collaborators().length === 0) {
+            <p>Nenhum registro encontrado</p>
+          } @else if (collaborators().length === 1) {
+            <p>1 registro encontrado</p>
+          } @else {
+            <p>{{ collaborators().length }} registros encontrados</p>
+          }
+        </div>
+      </div>
+
+      @if (loading()) {
+        <div class="empty-state">Carregando colaboradores...</div>
+      } @else {
+        <div class="table-wrapper">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>E-mail</th>
+                <th>Perfil</th>
+                <th>Organização</th>
+                <th>Criado em</th>
+                @if (canManage()) {
+                  <th class="text-right">Ações</th>
+                }
+              </tr>
+            </thead>
+            <tbody>
+              @for (collaborator of collaborators(); track collaborator.id) {
+                <tr>
+                  <td>{{ collaborator.id }}</td>
+                  <td class="font-semibold">{{ collaborator.fullName }}</td>
+                  <td>{{ collaborator.email }}</td>
+                  <td>
+                    <span class="badge" [class.manager]="collaborator.accessLevel === 'MANAGER'" [class.operator]="collaborator.accessLevel === 'OPERATOR'">
+                      {{ collaborator.accessLevel }}
+                    </span>
+                  </td>
+                  <td>{{ organizationName(collaborator.organizationId) }}</td>
+                  <td>{{ collaborator.createdAt | date: 'dd/MM/yyyy HH:mm' }}</td>
+                  @if (canManage()) {
+                    <td class="actions text-right">
+                      <button type="button" class="ghost button-small btn-edit" (click)="edit(collaborator)">Editar</button>
+                      <button type="button" class="danger button-small btn-delete" (click)="remove(collaborator)">Excluir</button>
+                    </td>
+                  }
+                </tr>
+              } @empty {
+                <tr>
+                  <td [attr.colspan]="canManage() ? 7 : 6">
+                    <div class="empty-state">Nenhum colaborador encontrado.</div>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </section>
+
+    @if (canManage()) {
+      <section class="panel form-panel card">
+        <div class="panel-header">
+          <div>
+            <h3>{{ editingId() ? 'Editar colaborador' : 'Novo colaborador' }}</h3>
+            <p>Defina credenciais, perfil e organização.</p>
+          </div>
+        </div>
+
+        <form [formGroup]="form" (ngSubmit)="submit()" class="entity-form">
+          <label>
+            <span>Nome Completo</span>
+            <input formControlName="fullName" placeholder="Ex: João da Silva" class="form-control" />
+            @if (form.controls.fullName.touched && form.controls.fullName.invalid) {
+              <small>Campo obrigatório.</small>
+            }
+            @if (fieldErrors()['fullName']) {
+              <small>{{ fieldErrors()['fullName'] }}</small>
+            }
+          </label>
+
+          <label>
+            <span>E-mail</span>
+            <input type="email" formControlName="email" placeholder="Ex: joao@rodojacto.com" class="form-control" />
+            @if (form.controls.email.touched && form.controls.email.invalid) {
+              <small>E-mail obrigatório e válido.</small>
+            }
+            @if (fieldErrors()['email']) {
+              <small>{{ fieldErrors()['email'] }}</small>
+            }
+          </label>
+
+          <label>
+            <span>Senha</span>
+            <input type="password" formControlName="password" placeholder="Mínimo 6 caracteres" class="form-control" />
+            <small class="text-muted text-hint">O backend exige senha também na atualização.</small>
+            @if (form.controls.password.touched && form.controls.password.invalid) {
+              <small>Informe ao menos 6 caracteres.</small>
+            }
+            @if (fieldErrors()['password']) {
+              <small>{{ fieldErrors()['password'] }}</small>
+            }
+          </label>
+
+          <label>
+            <span>Perfil de Acesso</span>
+            <select formControlName="accessLevel" class="form-control">
+              @for (level of accessLevels; track level) {
+                <option [value]="level">{{ level }}</option>
+              }
+            </select>
+          </label>
+
+          <label>
+            <span>Organização</span>
+            <select formControlName="organizationId" class="form-control">
+              @for (organization of organizations(); track organization.id) {
+                <option [ngValue]="organization.id">{{ organization.corporateName }}</option>
+              }
+            </select>
+            @if (form.controls.organizationId.touched && form.controls.organizationId.invalid) {
+              <small>Selecione uma organização.</small>
+            }
+            @if (fieldErrors()['organizationId']) {
+              <small>{{ fieldErrors()['organizationId'] }}</small>
+            }
+          </label>
+
+          <div class="button-row">
+            <button type="submit" [disabled]="saving()" class="btn btn-primary">
+              {{ saving() ? 'Salvando...' : editingId() ? 'Salvar' : 'Cadastrar' }}
+            </button>
+            @if (editingId() || form.dirty) {
+              <button type="button" class="ghost btn-secondary" (click)="resetForm()">Cancelar</button>
+            }
+          </div>
+        </form>
+      </section>
+    } @else {
+      <section class="panel permission-panel card">
+        <h3>Acesso somente leitura</h3>
+        <p>Seu perfil permite consultar apenas colaboradores da sua organização.</p>
+      </section>
+    }
+  </div>
+</section>

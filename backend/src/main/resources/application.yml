@@ -1,0 +1,28 @@
+spring:
+  application:
+    name: projeto_estagio_jacto
+  datasource:
+    url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:jacto_challenge}?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:root}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: true
+    show-sql: false
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.yaml
+  jackson:
+    default-property-inclusion: non_null
+
+server:
+  error:
+    include-message: always
+
+jwt:
+  secret: ${JWT_SECRET:change-this-secret-key-change-this-secret-key}
+  expiration-ms: ${JWT_EXPIRATION_MS:86400000}

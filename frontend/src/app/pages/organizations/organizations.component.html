@@ -1,0 +1,122 @@
+<section class="page-shell">
+  <header class="page-header">
+    <div class="page-header-content">
+      <img src="logosemnome.png" alt="Rodojacto" class="page-icon" />
+      <div>
+        <p class="page-eyebrow">Cadastro</p>
+        <h2>Organizações</h2>
+        <p>Controle as empresas vinculadas ao ambiente Rodojacto.</p>
+      </div>
+    </div>
+  </header>
+
+  <div class="crud-grid">
+    <section class="panel card">
+      <div class="panel-header">
+        <div>
+          <h3>Lista de organizações</h3>
+          @if (loading()) {
+            <p>Carregando registros...</p>
+          } @else if (organizations().length === 0) {
+            <p>Nenhum registro encontrado</p>
+          } @else if (organizations().length === 1) {
+            <p>1 registro encontrado</p>
+          } @else {
+            <p>{{ organizations().length }} registros encontrados</p>
+          }
+        </div>
+      </div>
+
+      @if (loading()) {
+        <div class="empty-state">Carregando organizações...</div>
+      } @else {
+        <div class="table-wrapper">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Razão Social</th>
+                <th>Código de Registro</th>
+                <th>Criado em</th>
+                @if (canManage()) {
+                  <th class="text-right">Ações</th>
+                }
+              </tr>
+            </thead>
+            <tbody>
+              @for (organization of organizations(); track organization.id) {
+                <tr>
+                  <td>{{ organization.id }}</td>
+                  <td class="font-semibold">{{ organization.corporateName }}</td>
+                  <td><span class="badge info">{{ organization.registrationCode }}</span></td>
+                  <td>{{ organization.createdAt | date: 'dd/MM/yyyy HH:mm' }}</td>
+                  @if (canManage()) {
+                    <td class="actions text-right">
+                      <button type="button" class="ghost button-small btn-edit" (click)="edit(organization)">Editar</button>
+                      <button type="button" class="danger button-small btn-delete" (click)="remove(organization)">Excluir</button>
+                    </td>
+                  }
+                </tr>
+              } @empty {
+                <tr>
+                  <td [attr.colspan]="canManage() ? 5 : 4">
+                    <div class="empty-state">Nenhuma organização encontrada.</div>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </section>
+
+    @if (canManage()) {
+      <section class="panel form-panel card">
+        <div class="panel-header">
+          <div>
+            <h3>{{ editingId() ? 'Editar organização' : 'Nova organização' }}</h3>
+            <p>Preencha os dados cadastrais da empresa.</p>
+          </div>
+        </div>
+
+        <form [formGroup]="form" (ngSubmit)="submit()" class="entity-form">
+          <label>
+            <span>Razão Social</span>
+            <input formControlName="corporateName" placeholder="Ex: Rodojacto Matriz" class="form-control" />
+            @if (form.controls.corporateName.touched && form.controls.corporateName.invalid) {
+              <small>Campo obrigatório.</small>
+            }
+            @if (fieldErrors()['corporateName']) {
+              <small>{{ fieldErrors()['corporateName'] }}</small>
+            }
+          </label>
+
+          <label>
+            <span>Código de Registro</span>
+            <input formControlName="registrationCode" placeholder="Ex: RODOJACTO-001" class="form-control" />
+            @if (form.controls.registrationCode.touched && form.controls.registrationCode.invalid) {
+              <small>Campo obrigatório.</small>
+            }
+            @if (fieldErrors()['registrationCode']) {
+              <small>{{ fieldErrors()['registrationCode'] }}</small>
+            }
+          </label>
+
+          <div class="button-row">
+            <button type="submit" [disabled]="saving()" class="btn btn-primary">
+              {{ saving() ? 'Salvando...' : editingId() ? 'Salvar' : 'Cadastrar' }}
+            </button>
+            @if (editingId() || form.dirty) {
+              <button type="button" class="ghost btn-secondary" (click)="resetForm()">Cancelar</button>
+            }
+          </div>
+        </form>
+      </section>
+    } @else {
+      <section class="panel permission-panel card">
+        <h3>Acesso somente leitura</h3>
+        <p>Seu perfil permite consultar apenas os dados da sua organização.</p>
+      </section>
+    }
+  </div>
+</section>

@@ -1,0 +1,107 @@
+<section class="page-shell">
+  <header class="page-header">
+    <div class="page-header-content">
+      <img src="logosemnome.png" alt="Rodojacto" class="page-icon" />
+      <div>
+        <p class="page-eyebrow">Visão Geral</p>
+        <h2>Dashboard</h2>
+        @if (currentUser(); as user) {
+          <p>
+            Bem-vindo, {{ user.fullName }}.
+            @if (isManager()) {
+              Gerencie organizações, colaboradores e dispositivos com segurança.
+            } @else {
+              Você visualiza apenas dados da própria organização.
+            }
+          </p>
+        }
+      </div>
+    </div>
+  </header>
+
+  @if (loading()) {
+    <div class="empty-state">Carregando indicadores...</div>
+  } @else if (summary(); as data) {
+    <div class="stats-grid">
+      @if (isManager()) {
+        <article class="stat-card card">
+          <span>Organizações</span>
+          <strong>{{ data.totalOrganizations ?? 0 | number }}</strong>
+          <small>Total cadastrado</small>
+        </article>
+      } @else {
+        <article class="stat-card highlight card">
+          <span>Organização Atual</span>
+          <strong>{{ data.organizationName }}</strong>
+          <small>Acesso limitado por perfil</small>
+        </article>
+      }
+
+      <article class="stat-card card">
+        <span>Colaboradores</span>
+        <strong>{{ data.totalCollaborators | number }}</strong>
+        <small>Equipe vinculada</small>
+      </article>
+
+      <article class="stat-card card">
+        <span>Dispositivos</span>
+        <strong>{{ data.totalDevices | number }}</strong>
+        <small>Inventário ativo</small>
+      </article>
+
+      <article class="stat-card card">
+        <span>Managers</span>
+        <strong>{{ data.totalManagers | number }}</strong>
+        <small>Perfis administrativos</small>
+      </article>
+
+      <article class="stat-card card">
+        <span>Operators</span>
+        <strong>{{ data.totalOperators | number }}</strong>
+        <small>Perfis operacionais</small>
+      </article>
+    </div>
+
+    @if (isManager()) {
+      <div class="analytics-grid">
+        <section class="panel card">
+          <div class="panel-header">
+            <div>
+              <h3>Dispositivos por Organização</h3>
+              <p>Distribuição do inventário por empresa.</p>
+            </div>
+          </div>
+          <div class="metric-list">
+            @for (metric of data.devicesByOrganization ?? []; track metric.organizationId) {
+              <div class="metric-row">
+                <span>{{ metric.organizationName }}</span>
+                <strong>{{ metric.total }}</strong>
+              </div>
+            } @empty {
+              <p class="empty-copy">Sem dados para exibir.</p>
+            }
+          </div>
+        </section>
+
+        <section class="panel card">
+          <div class="panel-header">
+            <div>
+              <h3>Colaboradores por Organização</h3>
+              <p>Volume de usuários vinculados a cada empresa.</p>
+            </div>
+          </div>
+          <div class="metric-list">
+            @for (metric of data.collaboratorsByOrganization ?? []; track metric.organizationId) {
+              <div class="metric-row">
+                <span>{{ metric.organizationName }}</span>
+                <strong>{{ metric.total }}</strong>
+              </div>
+            } @empty {
+              <p class="empty-copy">Sem dados para exibir.</p>
+            }
+          </div>
+        </section>
+      </div>
+    }
+  }
+</section>

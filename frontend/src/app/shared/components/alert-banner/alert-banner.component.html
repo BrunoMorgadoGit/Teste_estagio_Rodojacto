@@ -1,0 +1,12 @@
+@if (notification(); as alert) {
+  <div
+    class="alert-banner"
+    [class.success]="alert.type === 'success'"
+    [class.error]="alert.type === 'error'"
+    [class.warning]="alert.type === 'warning'"
+    [class.info]="alert.type === 'info'"
+  >
+    <span>{{ alert.message }}</span>
+    <button type="button" class="link-button" (click)="clear()">Fechar</button>
+  </div>
+}

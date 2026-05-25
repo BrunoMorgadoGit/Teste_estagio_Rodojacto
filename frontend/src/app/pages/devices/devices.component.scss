@@ -1,0 +1,46 @@
+.operator-panel {
+  display: grid;
+  gap: 1rem;
+}
+
+.operator-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+
+  h3 {
+    margin: 0;
+  }
+}
+
+.operator-summary {
+  display: grid;
+  gap: 0.65rem;
+  margin-top: 0.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--color-border);
+}
+
+.operator-summary-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.6rem 0.85rem;
+  border-radius: 8px;
+  background: #f9fafb;
+  border: 1px solid var(--color-border);
+}
+
+.operator-summary-label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--color-muted);
+}
+
+.operator-summary-value {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--color-text);
+}

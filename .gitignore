@@ -1,0 +1,64 @@
+# Environment and local secrets
+.env
+.env.*
+
+# Logs and temporary files
+*.log
+*.tmp
+*.temp
+*.swp
+*.swo
+*.bak
+*.orig
+tmp/
+temp/
+.cache/
+
+# Operating system files
+**/.DS_Store
+**/Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# IDEs and local tooling
+.idea/
+.vscode/
+.codex/
+.agents/
+*.iml
+.project
+.classpath
+.settings/
+.history/
+
+# Frontend dependencies and generated files
+frontend/node_modules/
+frontend/dist/
+frontend/.angular/
+frontend/coverage/
+frontend/.cache/
+frontend/out-tsc/
+frontend/tmp/
+
+# Backend generated files
+projeto_estagio_jacto/target/
+
+# Generic build outputs
+**/build/
+**/target/
+**/dist/
+**/out/
+**/coverage/
+
+# Test reports and caches
+*.lcov
+coverage/
+.nyc_output/
+
+# Archive/package artifacts
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+*.rar
+

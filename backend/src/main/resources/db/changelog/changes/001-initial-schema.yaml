@@ -1,0 +1,154 @@
+databaseChangeLog:
+  - changeSet:
+      id: 001-create-organizations
+      author: codex
+      changes:
+        - createTable:
+            tableName: organizations
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: pk_organizations
+                    nullable: false
+              - column:
+                  name: corporate_name
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: registration_code
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: DATETIME
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+        - addUniqueConstraint:
+            tableName: organizations
+            columnNames: registration_code
+            constraintName: uk_organizations_registration_code
+
+  - changeSet:
+      id: 002-create-collaborators
+      author: codex
+      changes:
+        - createTable:
+            tableName: collaborators
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: pk_collaborators
+                    nullable: false
+              - column:
+                  name: full_name
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: email
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: password
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: access_level
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: organization_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: DATETIME
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+        - addUniqueConstraint:
+            tableName: collaborators
+            columnNames: email
+            constraintName: uk_collaborators_email
+        - addForeignKeyConstraint:
+            baseTableName: collaborators
+            baseColumnNames: organization_id
+            referencedTableName: organizations
+            referencedColumnNames: id
+            constraintName: fk_collaborators_organization
+            onDelete: RESTRICT
+        - createIndex:
+            tableName: collaborators
+            indexName: idx_collaborators_organization_id
+            columns:
+              - column:
+                  name: organization_id
+
+  - changeSet:
+      id: 003-create-devices
+      author: codex
+      changes:
+        - createTable:
+            tableName: devices
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: pk_devices
+                    nullable: false
+              - column:
+                  name: model
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: asset_tag
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: organization_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: DATETIME
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+        - addUniqueConstraint:
+            tableName: devices
+            columnNames: asset_tag
+            constraintName: uk_devices_asset_tag
+        - addForeignKeyConstraint:
+            baseTableName: devices
+            baseColumnNames: organization_id
+            referencedTableName: organizations
+            referencedColumnNames: id
+            constraintName: fk_devices_organization
+            onDelete: RESTRICT
+        - createIndex:
+            tableName: devices
+            indexName: idx_devices_organization_id
+            columns:
+              - column:
+                  name: organization_id

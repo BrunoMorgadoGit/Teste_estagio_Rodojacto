@@ -1,0 +1,64 @@
+databaseChangeLog:
+  - changeSet:
+      id: 004-seed-initial-data
+      author: codex
+      changes:
+        - sql:
+            sql: |
+              INSERT INTO organizations (id, corporate_name, registration_code)
+              SELECT 1, 'Rodojacto Matriz', 'RODOJACTO-001'
+              WHERE NOT EXISTS (
+                SELECT 1 FROM organizations WHERE id = 1 OR registration_code = 'RODOJACTO-001'
+              );
+        - sql:
+            sql: |
+              INSERT INTO organizations (id, corporate_name, registration_code)
+              SELECT 2, 'Rodojacto Operacoes', 'RODOJACTO-002'
+              WHERE NOT EXISTS (
+                SELECT 1 FROM organizations WHERE id = 2 OR registration_code = 'RODOJACTO-002'
+              );
+        - sql:
+            sql: |
+              INSERT INTO collaborators (id, full_name, email, password, access_level, organization_id)
+              SELECT 1, 'Manager Principal', 'manager@rodojacto.com',
+                '$2a$10$dyduiD6wS0PkjiX2l81Xrefoj8j178M.wDtnnXnWxyiCmx86izHCe', 'MANAGER', 1
+              WHERE NOT EXISTS (
+                SELECT 1 FROM collaborators WHERE id = 1 OR email = 'manager@rodojacto.com'
+              );
+        - sql:
+            sql: |
+              INSERT INTO collaborators (id, full_name, email, password, access_level, organization_id)
+              SELECT 2, 'Operator Principal', 'operator@rodojacto.com',
+                '$2a$10$xmL4DLApRJEEodY.Tji.y.YScd9m7TrSDP/o/dwmVWVoA8HypRJaC', 'OPERATOR', 2
+              WHERE NOT EXISTS (
+                SELECT 1 FROM collaborators WHERE id = 2 OR email = 'operator@rodojacto.com'
+              );
+        - sql:
+            sql: |
+              INSERT INTO collaborators (id, full_name, email, password, access_level, organization_id)
+              SELECT 3, 'Operator Suporte', 'suporte@rodojacto.com',
+                '$2a$10$nQVy9hRh908ygoAXZ8WqYeLgmeUdacAKczZPmZfeKAiyQZKUQL77e', 'OPERATOR', 1
+              WHERE NOT EXISTS (
+                SELECT 1 FROM collaborators WHERE id = 3 OR email = 'suporte@rodojacto.com'
+              );
+        - sql:
+            sql: |
+              INSERT INTO devices (id, model, asset_tag, organization_id)
+              SELECT 1, 'Notebook Dell', 'NOTE-001', 1
+              WHERE NOT EXISTS (
+                SELECT 1 FROM devices WHERE id = 1 OR asset_tag = 'NOTE-001'
+              );
+        - sql:
+            sql: |
+              INSERT INTO devices (id, model, asset_tag, organization_id)
+              SELECT 2, 'Coletor Zebra', 'COLETOR-001', 1
+              WHERE NOT EXISTS (
+                SELECT 1 FROM devices WHERE id = 2 OR asset_tag = 'COLETOR-001'
+              );
+        - sql:
+            sql: |
+              INSERT INTO devices (id, model, asset_tag, organization_id)
+              SELECT 3, 'Tablet Samsung', 'TABLET-001', 2
+              WHERE NOT EXISTS (
+                SELECT 1 FROM devices WHERE id = 3 OR asset_tag = 'TABLET-001'
+              );

@@ -1,0 +1,159 @@
+<section class="page-shell">
+  <header class="page-header">
+    <div class="page-header-content">
+      <img src="logosemnome.png" alt="Rodojacto" class="page-icon" />
+      <div>
+        <p class="page-eyebrow">Inventário</p>
+        <h2>Dispositivos</h2>
+        <p>Acompanhe equipamentos e ativos vinculados às organizações.</p>
+      </div>
+    </div>
+  </header>
+
+  <div class="crud-grid">
+    <section class="panel card">
+      <div class="panel-header">
+        <div>
+          <h3>Lista de dispositivos</h3>
+          @if (loading()) {
+            <p>Carregando registros...</p>
+          } @else if (devices().length === 0) {
+            <p>Nenhum registro encontrado</p>
+          } @else if (devices().length === 1) {
+            <p>1 registro encontrado</p>
+          } @else {
+            <p>{{ devices().length }} registros encontrados</p>
+          }
+        </div>
+      </div>
+
+      @if (loading()) {
+        <div class="empty-state">Carregando dispositivos...</div>
+      } @else {
+        <div class="table-wrapper">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Modelo</th>
+                <th>Asset Tag</th>
+                <th>Organização</th>
+                <th>Criado em</th>
+                @if (canManage()) {
+                  <th class="text-right">Ações</th>
+                }
+              </tr>
+            </thead>
+            <tbody>
+              @for (device of devices(); track device.id) {
+                <tr>
+                  <td>{{ device.id }}</td>
+                  <td class="font-semibold">{{ device.model }}</td>
+                  <td><span class="badge info">{{ device.assetTag }}</span></td>
+                  <td>{{ organizationName(device.organizationId) }}</td>
+                  <td>{{ device.createdAt | date: 'dd/MM/yyyy HH:mm' }}</td>
+                  @if (canManage()) {
+                    <td class="actions text-right">
+                      <button type="button" class="ghost button-small btn-edit" (click)="edit(device)">Editar</button>
+                      <button type="button" class="danger button-small btn-delete" (click)="remove(device)">Excluir</button>
+                    </td>
+                  }
+                </tr>
+              } @empty {
+                <tr>
+                  <td [attr.colspan]="canManage() ? 6 : 5">
+                    <div class="empty-state">Nenhum dispositivo encontrado.</div>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </section>
+
+    @if (canManage()) {
+      <section class="panel form-panel card">
+        <div class="panel-header">
+          <div>
+            <h3>{{ editingId() ? 'Editar dispositivo' : 'Novo dispositivo' }}</h3>
+            <p>Informe modelo, asset tag e organização responsável.</p>
+          </div>
+        </div>
+
+        <form [formGroup]="form" (ngSubmit)="submit()" class="entity-form">
+          <label>
+            <span>Modelo</span>
+            <input formControlName="model" placeholder="Ex: Notebook Dell" class="form-control" />
+            @if (form.controls.model.touched && form.controls.model.invalid) {
+              <small>Campo obrigatório.</small>
+            }
+            @if (fieldErrors()['model']) {
+              <small>{{ fieldErrors()['model'] }}</small>
+            }
+          </label>
+
+          <label>
+            <span>Asset Tag</span>
+            <input formControlName="assetTag" placeholder="Ex: NOTE-001" class="form-control" />
+            @if (form.controls.assetTag.touched && form.controls.assetTag.invalid) {
+              <small>Campo obrigatório.</small>
+            }
+            @if (fieldErrors()['assetTag']) {
+              <small>{{ fieldErrors()['assetTag'] }}</small>
+            }
+          </label>
+
+          <label>
+            <span>Organização</span>
+            <select formControlName="organizationId" class="form-control">
+              @for (organization of organizations(); track organization.id) {
+                <option [ngValue]="organization.id">{{ organization.corporateName }}</option>
+              }
+            </select>
+            @if (form.controls.organizationId.touched && form.controls.organizationId.invalid) {
+              <small>Selecione uma organização.</small>
+            }
+            @if (fieldErrors()['organizationId']) {
+              <small>{{ fieldErrors()['organizationId'] }}</small>
+            }
+          </label>
+
+          <div class="button-row">
+            <button type="submit" [disabled]="saving()" class="btn btn-primary">
+              {{ saving() ? 'Salvando...' : editingId() ? 'Salvar' : 'Cadastrar' }}
+            </button>
+            @if (editingId() || form.dirty) {
+              <button type="button" class="ghost btn-secondary" (click)="resetForm()">Cancelar</button>
+            }
+          </div>
+        </form>
+      </section>
+    } @else {
+      <section class="panel permission-panel card operator-panel">
+        <div class="operator-panel-header">
+          <h3>Acesso somente leitura</h3>
+          <span class="badge operator">OPERATOR</span>
+        </div>
+        <p>Seu perfil permite consultar apenas dispositivos da sua organização.</p>
+
+        @if (currentUser(); as user) {
+          <div class="operator-summary">
+            <div class="operator-summary-item">
+              <span class="operator-summary-label">Organização</span>
+              <span class="operator-summary-value">{{ user.organizationName }}</span>
+            </div>
+            <div class="operator-summary-item">
+              <span class="operator-summary-label">Dispositivos visíveis</span>
+              <span class="operator-summary-value">{{ devices().length }}</span>
+            </div>
+            <div class="operator-summary-item">
+              <span class="operator-summary-label">Perfil de acesso</span>
+              <span class="operator-summary-value">{{ user.accessLevel }}</span>
+            </div>
+          </div>
+        }
+      </section>
+    }
+  </div>
+</section>
